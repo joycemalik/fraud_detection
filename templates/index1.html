@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Real-Time Fraud Monitor</title>
+</head>
+<body style="font-family: Arial, sans-serif; text-align: center; margin-top: 50px;">
+    <h1>🎙️ Real-Time Fraud Detection</h1>
+
+    <button onclick="startMonitoring()" style="padding: 10px 20px; font-size: 18px;">Start</button>
+    <button onclick="stopMonitoring()" style="padding: 10px 20px; font-size: 18px;">Stop</button>
+
+    <div id="status" style="margin-top: 30px; font-size: 18px;"></div>
+    <div id="conversation" style="margin-top: 30px; max-width: 600px; margin-left: auto; margin-right: auto; text-align: left;"></div>
+
+    <script>
+        async function startMonitoring() {
+            document.getElementById('status').innerHTML = "🎙️ Monitoring started...";
+            await fetch('/start', { method: 'POST' });
+        }
+
+        async function stopMonitoring() {
+            document.getElementById('status').innerHTML = "🛑 Stopping monitoring...";
+            const response = await fetch('/stop', { method: 'POST' });
+            const data = await response.json();
+            document.getElementById('status').innerHTML = "🛑 Monitoring stopped.";
+            document.getElementById('conversation').innerHTML = `
+                <h3>Full Conversation:</h3>
+                <p>${data.conversation}</p>
+            `;
+        }
+    </script>
+</body>
+</html>

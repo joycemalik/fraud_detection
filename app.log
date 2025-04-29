@@ -1,0 +1,30 @@
+2025-04-29 13:44:14,970 INFO [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.17.48.134:5000
+2025-04-29 13:44:14,971 INFO [33mPress CTRL+C to quit[0m
+2025-04-29 13:44:23,436 INFO 127.0.0.1 - - [29/Apr/2025 13:44:23] "GET / HTTP/1.1" 200 -
+2025-04-29 13:44:26,097 INFO 127.0.0.1 - - [29/Apr/2025 13:44:26] "POST /start HTTP/1.1" 200 -
+2025-04-29 13:44:31,464 INFO Retrying request to /openai/v1/audio/transcriptions in 0.423603 seconds
+2025-04-29 13:44:31,973 INFO Retrying request to /openai/v1/audio/transcriptions in 0.800939 seconds
+2025-04-29 13:44:32,817 ERROR Transcription error: Connection error.
+2025-04-29 13:44:36,418 INFO Retrying request to /openai/v1/audio/transcriptions in 0.435092 seconds
+2025-04-29 13:44:36,925 INFO Retrying request to /openai/v1/audio/transcriptions in 0.879468 seconds
+2025-04-29 13:44:37,869 ERROR Transcription error: Connection error.
+2025-04-29 13:44:41,401 INFO Retrying request to /openai/v1/audio/transcriptions in 0.426536 seconds
+2025-04-29 13:44:41,883 INFO Retrying request to /openai/v1/audio/transcriptions in 0.857739 seconds
+2025-04-29 13:44:42,789 ERROR Transcription error: Connection error.
+2025-04-29 13:44:46,408 INFO Retrying request to /openai/v1/audio/transcriptions in 0.432938 seconds
+2025-04-29 13:44:46,893 INFO Retrying request to /openai/v1/audio/transcriptions in 0.914114 seconds
+2025-04-29 13:44:47,853 ERROR Transcription error: Connection error.
+2025-04-29 13:44:48,920 INFO 127.0.0.1 - - [29/Apr/2025 13:44:48] "POST /stop HTTP/1.1" 200 -
+2025-04-29 13:53:07,155 INFO HTTP Request: POST https://api.groq.com/openai/v1/audio/transcriptions "HTTP/1.1 400 Bad Request"
+2025-04-29 13:53:07,156 CRITICAL Cannot reach Groq API: Error code: 400 - {'error': {'message': 'file is empty', 'type': 'invalid_request_error'}}
+2025-04-29 13:54:07,817 INFO HTTP Request: POST https://api.groq.com/openai/v1/audio/transcriptions "HTTP/1.1 404 Not Found"
+2025-04-29 13:54:07,820 CRITICAL Cannot reach Groq API: Error code: 404 - {'error': {'message': 'The model `whisper-small` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'code': 'model_not_found'}}
+2025-04-29 13:54:42,698 INFO HTTP Request: POST https://api.groq.com/openai/v1/audio/transcriptions "HTTP/1.1 404 Not Found"
+2025-04-29 13:54:42,700 CRITICAL Cannot reach Groq API: Error code: 404 - {'error': {'message': 'The model `whisper-small` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'code': 'model_not_found'}}
+2025-04-29 13:56:42,210 INFO HTTP Request: POST https://api.groq.com/openai/v1/audio/transcriptions "HTTP/1.1 404 Not Found"
+2025-04-29 13:56:42,214 CRITICAL Cannot reach Groq API: Error code: 404 - {'error': {'message': 'The model `whisper-medium-v2` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'code': 'model_not_found'}}
+2025-04-29 14:10:34,831 INFO HTTP Request: POST https://api.groq.com/openai/v1/audio/transcriptions "HTTP/1.1 400 Bad Request"
+2025-04-29 14:10:34,832 CRITICAL Cannot reach Groq API: Error code: 400 - {'error': {'message': 'could not process file - is it a valid media file?', 'type': 'invalid_request_error'}}
