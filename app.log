@@ -28,3 +28,4 @@
 2025-04-29 13:56:42,214 CRITICAL Cannot reach Groq API: Error code: 404 - {'error': {'message': 'The model `whisper-medium-v2` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'code': 'model_not_found'}}
 2025-04-29 14:10:34,831 INFO HTTP Request: POST https://api.groq.com/openai/v1/audio/transcriptions "HTTP/1.1 400 Bad Request"
 2025-04-29 14:10:34,832 CRITICAL Cannot reach Groq API: Error code: 400 - {'error': {'message': 'could not process file - is it a valid media file?', 'type': 'invalid_request_error'}}
+2025-04-30 07:59:44,307 INFO Groq SDK version: 0.4.2

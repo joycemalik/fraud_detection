@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fraud Call Detector</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        #status { margin-top: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .fraud { border-color: red; background-color: #ffe0e0; color: red; font-weight: bold; }
+        .safe { border-color: green; background-color: #e0ffe0; color: green; }
+        button { padding: 10px 15px; margin-right: 10px; cursor: pointer; }
+        #log { margin-top: 20px; white-space: pre-wrap; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>Fraud Call Detector</h1>
+    <div>
+        <label for="language">Language:</label>
+        <select id="language">
+            <option value="en" selected>English</option>
+            <option value="hi">Hindi</option>
+            <!-- Add other languages supported by Whisper -->
+        </select>
+        <button id="startButton">Start Monitoring</button>
+        <button id="stopButton" disabled>Stop Monitoring</button>
+    </div>
+
+    <div id="status">
+        Status: Idle
+    </div>
+    <div id="log-container" style="display: none;">
+        <h2>Conversation Log:</h2>
+        <pre id="log"></pre>
+    </div>
+
+    <script>
+        const startButton = document.getElementById('startButton');
+        const stopButton = document.getElementById('stopButton');
+        const statusDiv = document.getElementById('status');
+        const logDiv = document.getElementById('log');
+        const logContainer = document.getElementById('log-container');
+        const languageSelect = document.getElementById('language');
+        let statusInterval;
+        const API_BASE_URL = 'http://localhost:5000'; // Adjust if needed
+
+        async function updateStatus() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/status`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+
+                statusDiv.textContent = `Status: ${data.status_message} | Monitoring: ${data.monitoring_active} | Fraud Score: ${data.fraud_score.toFixed(3)}`;
+                statusDiv.className = data.fraud_detected ? 'fraud' : (data.monitoring_active ? '' : 'safe'); // Basic styling
+
+                // If monitoring stopped due to fraud, stop polling
+                if (data.status_message.includes("FRAUD DETECTED")) {
+                   stopPolling();
+                   startButton.disabled = false;
+                   stopButton.disabled = true;
+                   statusDiv.classList.add('fraud'); // Ensure fraud style persists
+                   alert("🚨 FRAUD DETECTED! Monitoring stopped. Check status below."); // Optional browser alert
+                } else if (!data.monitoring_active && statusInterval) {
+                   // Stopped manually or finished
+                   stopPolling();
+                   startButton.disabled = false;
+                   stopButton.disabled = true;
+                }
+
+            } catch (error) {
+                console.error('Error fetching status:', error);
+                statusDiv.textContent = 'Error fetching status. Check console.';
+                statusDiv.className = 'error';
+                stopPolling(); // Stop polling on error
+                startButton.disabled = false;
+                stopButton.disabled = true;
+            }
+        }
+
+        function startPolling() {
+            if (statusInterval) clearInterval(statusInterval);
+            statusInterval = setInterval(updateStatus, 1500); // Poll every 1.5 seconds
+            updateStatus(); // Initial immediate update
+        }
+
+        function stopPolling() {
+            if (statusInterval) clearInterval(statusInterval);
+            statusInterval = null;
+        }
+
+        startButton.addEventListener('click', async () => {
+            startButton.disabled = true;
+            stopButton.disabled = false;
+            logContainer.style.display = 'none'; // Hide log on start
+            logDiv.textContent = '';
+            statusDiv.textContent = 'Starting...';
+            statusDiv.className = '';
+
+
+            try {
+                const selectedLanguage = languageSelect.value;
+                const response = await fetch(`${API_BASE_URL}/start`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ language: selectedLanguage })
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.message || 'Failed to start');
+                console.log('Start response:', data);
+                statusDiv.textContent = 'Status: Monitoring active...';
+                startPolling();
+            } catch (error) {
+                console.error('Error starting monitoring:', error);
+                statusDiv.textContent = `Error starting: ${error.message}`;
+                startButton.disabled = false;
+                stopButton.disabled = true;
+            }
+        });
+
+        stopButton.addEventListener('click', async () => {
+            startButton.disabled = false;
+            stopButton.disabled = true;
+            statusDiv.textContent = 'Stopping...';
+            stopPolling();
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/stop`, { method: 'POST' });
+                const data = await response.json();
+                 if (!response.ok) throw new Error(data.message || 'Failed to stop');
+                console.log('Stop response:', data);
+                statusDiv.textContent = `Status: ${data.message}`;
+                logDiv.textContent = data.conversation || "No conversation recorded.";
+                logContainer.style.display = 'block'; // Show log on stop
+            } catch (error) {
+                console.error('Error stopping monitoring:', error);
+                statusDiv.textContent = `Error stopping: ${error.message}`;
+                 // Re-enable start button even if stop fails? Maybe.
+                startButton.disabled = false;
+            }
+        });
+
+         // Initial state
+        startButton.disabled = false;
+        stopButton.disabled = true;
+
+    </script>
+</body>
+</html>
